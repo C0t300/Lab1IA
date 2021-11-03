@@ -107,7 +107,6 @@ def gbj(arrayDomain: list, arrayRestrict: list) -> list:
                 left = i
                 break
         i = left
-        print(instancias)
         if len(newDomain[i]) != 0:
             choice = newDomain[i][0]
             check = isThereTrouble(choice, i, instancias, arrayRestrict)
@@ -118,15 +117,15 @@ def gbj(arrayDomain: list, arrayRestrict: list) -> list:
                 instancias[i] = 0
                 newDomain[i] = [x for x in newDomain[i] if x != choice]
         else:
-            print(i)
             #encontrar con quien tiene el problema el i, que sea el mas cercano hacia la izquierda
             fti = firstTroubledInstance(i, arrayRestrict)
             prevChoice = instancias[fti]
-            for i in range(fti+1, len(instancias)):
+            for i in range(fti, len(instancias)):
                 instancias[i] = 0
+            for i in range(fti+1, len(instancias)):
                 newDomain[i] = arrayDomain[i].copy()
-            print(newDomain[fti])
-            newDomain[fti].remove(prevChoice)
+            if prevChoice in newDomain[fti]:
+                newDomain[fti].remove(prevChoice)
             i = fti
         
                 
