@@ -101,10 +101,14 @@ def getForwardCheck(i, arrayRestrict):
     return [y for x, y in arrayRestrict if x == i and y > i]
 
 def filterDomain(newDomain, notSame, choice):
+    d = {}
     for i in notSame:
         if choice in newDomain[i]:
             newDomain[i].remove(choice)
-    return not any(len(newDomain[i]) == 0 for i in range(len(newDomain)))
+            if i not in d:
+                d[i] = []
+            d[i].append(choice)
+    return d
 
 def fc(arrayDomain: list, arrayRestrict: list) -> list:
     instancias = [0 for x in range(len(arrayDomain))]
@@ -119,13 +123,13 @@ def fc(arrayDomain: list, arrayRestrict: list) -> list:
         if len(newDomain[i]) != 0:
             choice = newDomain[i][0]
             notSame = getForwardCheck(i, arrayRestrict)
-            viable = filterDomain(newDomain, notSame, choice)
-            if viable:
+            deleted = filterDomain(newDomain, notSame, choice)
+            if not any(len(newDomain[i]) == 0 for i in range(len(newDomain))):
                 instancias[i] = choice
                 i += 1
             else:
-                for i2 in range(i+1, len(instancias)):
-                    newDomain[i2] = arrayDomain[i2].copy()
+                for i2 in deleted:
+                    newDomain[i2].extend(deleted[i2])
                 instancias[i] = 0
                 newDomain[i] = [x for x in newDomain[i] if x != choice]
         else:
